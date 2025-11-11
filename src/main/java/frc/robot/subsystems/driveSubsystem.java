@@ -10,10 +10,10 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class driveSubsystem extends SubsystemBase {
-  /** Creates a new driveSubsystem. */
+public class DriveSubsystem extends SubsystemBase {
+  /** Creates a new DriveSubsystem. */
   SparkMax motor = new SparkMax(22, MotorType.kBrushless);
-  public driveSubsystem() {}
+  public DriveSubsystem() {}
 
   /**
    * Example command factory method.
