@@ -30,7 +30,7 @@ public class Drive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setMotorVolts(5.0);
+    m_subsystem.setMotorVoltage(5.0);
     System.out.println("Running");
   }
 

@@ -49,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public void setMotorVolts(double volts) {
+  public void setMotorVoltage(double volts) {
     motor.setVoltage(volts);
   }
 
