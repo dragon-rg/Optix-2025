@@ -31,6 +31,7 @@ public class Drive extends Command {
   @Override
   public void execute() {
     m_subsystem.setMotorVolts(5.0);
+    System.out.println("Running");
   }
 
   // Called once the command ends or is interrupted.

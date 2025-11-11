@@ -52,4 +52,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void setMotorVolts(double volts) {
     motor.setVoltage(volts);
   }
+
+  public void stop() {
+    motor.setVoltage(0.0);
+  }
 }
