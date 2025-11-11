@@ -18,7 +18,7 @@ public class Drive extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public Drive(DriveSubsystem subsystem) {
-    this.m_subsystem = subsystem;
+    m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
