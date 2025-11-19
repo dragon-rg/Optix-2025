@@ -8,7 +8,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class Drive extends Command {
+public class DriveToStart extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveSubsystem m_subsystem;
 
@@ -17,7 +17,7 @@ public class Drive extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Drive(DriveSubsystem subsystem) {
+  public DriveToStart(DriveSubsystem subsystem) {
     m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -30,8 +30,7 @@ public class Drive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setMotorVoltage(5.0);
-    System.out.println("Running");
+    m_subsystem.driveToDestination(0.0); // Pranay is weird
   }
 
   // Called once the command ends or is interrupted.

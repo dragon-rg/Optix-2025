@@ -7,13 +7,23 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
-  SparkMax motor = new SparkMax(22, MotorType.kBrushless);
-  public DriveSubsystem() {}
+  SparkMax motor = new SparkMax(22, MotorType.kBrushless); // constructing motor
+
+  private Encoder encoder = new Encoder(0, 1, false, EncodingType.k4X); // constructing encoder
+  private final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12; // encoder records in ticks, but we need it in feet.
+
+  final double kP = 0.5;
+  double setpoint;
+  double error;
+
+  public DriveSubsystem() {encoder.reset();}
 
   /**
    * Example command factory method.
@@ -42,6 +52,8 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    double encoderPosition = encoder.get() * kDriveTick2Feet; // encoder position converted to feed
+    error = setpoint - encoderPosition;
   }
 
   @Override
@@ -55,5 +67,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void stop() {
     motor.setVoltage(0.0);
+  }
+
+  public void driveToDestination(double destination) {
+    setpoint = destination;
+    double output = kP * error;
+    motor.setVoltage(output);
   }
 }
