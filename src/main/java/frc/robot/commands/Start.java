@@ -18,7 +18,7 @@ public class Start extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public Start(DriveSubsystem subsystem) {
-    m_subsystem = subsystem;
+    this.m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }

@@ -18,7 +18,7 @@ public class StopMotor extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public StopMotor(DriveSubsystem subsystem) {
-    m_subsystem = subsystem;
+    this.m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -30,8 +30,8 @@ public class StopMotor extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.setMotorVoltage(5.0);
-    System.out.println("Running");
+    m_subsystem.stop();
+    System.out.println("Stopping");
   }
 
   // Called once the command ends or is interrupted.
