@@ -4,22 +4,30 @@
 
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
-  SparkMax motor = new SparkMax(5, MotorType.kBrushless);
+  // public final SparkMax motor = new SparkMax(5, MotorType.kBrushless);
+
+  LinearSystem<N1, N1, N1> drivePlant = LinearSystemId.createFlywheelSystem(DCMotor.getNEO(1), 0.09, 1);
+  public final FlywheelSim motorSim = new FlywheelSim(drivePlant, DCMotor.getNEO(1), 1);
   public DriveSubsystem() {}
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
    *
-   * @return value of some boolean subsystem state, such as a digital sensor.
+e   * @return value of some boolean subsystem state, such as a digital sensor.
    */
   public boolean exampleCondition() {
     // Query some boolean state, such as a digital sensor.
@@ -28,8 +36,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("velocity", motor.getAbsoluteEncoder().getVelocity());
-    // This method will be called once per scheduler run
+    Logger.recordOutput("Voltage", motorSim.getInputVoltage());
+
+    // Logger.recordOutput("Voltage", motor.getAppliedOutput());
   }
 
   @Override
@@ -38,10 +47,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void setMotorVoltage(double volts) {
-    motor.setVoltage(volts);
+    motorSim.setInputVoltage(volts);
+    // motor.setVoltage(volts);
   }
 
   public void stop() {
-    motor.setVoltage(0.0);
+    motorSim.setInputVoltage(0.0);
+    // motor.setVoltage(0.0);
   }
 }
