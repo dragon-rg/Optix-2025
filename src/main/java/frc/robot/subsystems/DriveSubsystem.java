@@ -5,12 +5,16 @@
 package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedTunableNumber;
 
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -21,10 +25,17 @@ public class DriveSubsystem extends SubsystemBase {
   SparkMax wheel3 = new SparkMax(7, MotorType.kBrushless);
   SparkMax wheel4 = new SparkMax(9, MotorType.kBrushless);
 
+  SparkMaxSim wheel1_Sim = new SparkMaxSim(wheel1, DCMotor.getNEO(1)); // sim motors
+  SparkMaxSim wheel2_Sim = new SparkMaxSim(wheel2, DCMotor.getNEO(1));
+  SparkMaxSim wheel3_Sim = new SparkMaxSim(wheel3, DCMotor.getNEO(1));
+  SparkMaxSim wheel4_Sim = new SparkMaxSim(wheel4, DCMotor.getNEO(1));
+
   public Encoder encoder = new Encoder(0, 1, false, EncodingType.k4X); // constructing encoder
+  public EncoderSim encoderSim = new EncoderSim(encoder); // constructing sim encoder
+
   private final double kDriveTick2Feet = 1.0 / 128 * 6 * Math.PI / 12; // encoder records in ticks, but we need it in feet.
 
-  final double kP = 0.5;
+  private static final LoggedTunableNumber kP = new LoggedTunableNumber("flywheel/kP", 0.0);  
   public double setpoint = 0;
   public double error;
 
@@ -59,10 +70,10 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     double encoderPosition = encoder.get() * kDriveTick2Feet; // encoder position converted to feet
     error = setpoint - encoderPosition;
-    Logger.recordOutput("Wheel 1 volt", wheel1.getBusVoltage());
-    Logger.recordOutput("Wheel 2 volt", wheel2.getBusVoltage());
-    Logger.recordOutput("Wheel 3 volt", wheel3.getBusVoltage());
-    Logger.recordOutput("Wheel 4 volt", wheel4.getBusVoltage());
+    Logger.recordOutput("Wheel 1 volt", wheel1.getAppliedOutput());
+    Logger.recordOutput("Wheel 2 volt", wheel2.getAppliedOutput());
+    Logger.recordOutput("Wheel 3 volt", wheel3.getAppliedOutput());
+    Logger.recordOutput("Wheel 4 volt", wheel4.getAppliedOutput());
 
     Logger.recordOutput("Setpoint: ", setpoint);
     Logger.recordOutput("Encoder position", encoderPosition);
@@ -72,6 +83,16 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    double encoderPosition = encoderSim.getDistance() * kDriveTick2Feet; // encoder position converted to feet
+    error = setpoint - encoderPosition;
+    Logger.recordOutput("Wheel 1 volt", wheel1_Sim.getAppliedOutput());
+    Logger.recordOutput("Wheel 2 volt", wheel2_Sim.getAppliedOutput());
+    Logger.recordOutput("Wheel 3 volt", wheel3_Sim.getAppliedOutput());
+    Logger.recordOutput("Wheel 4 volt", wheel4_Sim.getAppliedOutput());
+
+    Logger.recordOutput("Setpoint", setpoint);
+    Logger.recordOutput("Encoder position", encoderPosition);
+    Logger.recordOutput("Error", error);
   }
 
   public void setMotorVoltage(double volts) {
@@ -85,9 +106,15 @@ public class DriveSubsystem extends SubsystemBase {
   public void driveToDestination(double destination) {
     setpoint = destination;
     double output = kP * error;
-    wheel1.setVoltage(output);
-    wheel2.setVoltage(output);
-    wheel3.setVoltage(output);
-    wheel3.setVoltage(output);
+    // wheel1.setVoltage(output); //real
+    // wheel2.setVoltage(output);
+    // wheel3.setVoltage(output);
+    // wheel3.setVoltage(output);
+
+    wheel1_Sim.setAppliedOutput(output);
+    wheel2_Sim.setAppliedOutput(output);
+    wheel3_Sim.setAppliedOutput(output);
+    wheel4_Sim.setAppliedOutput(output);
+
   }
 }
