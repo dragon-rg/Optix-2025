@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -18,10 +19,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
-  // public final SparkMax motor = new SparkMax(5, MotorType.kBrushless);
+  public final SparkMax motor = new SparkMax(5, MotorType.kBrushless);
 
-  LinearSystem<N1, N1, N1> drivePlant = LinearSystemId.createFlywheelSystem(DCMotor.getNEO(1), 0.09, 1);
-  public final FlywheelSim motorSim = new FlywheelSim(drivePlant, DCMotor.getNEO(1), 1);
+  // LinearSystem<N1, N1, N1> drivePlant = LinearSystemId.createFlywheelSystem(DCMotor.getNEO(1), 0.09, 1);
+  // public final FlywheelSim motorSim = new FlywheelSim(drivePlant, DCMotor.getNEO(1), 1);
+
+  public final SparkMaxSim motorSim = new SparkMaxSim(motor, DCMotor.getNEO(1));
   public DriveSubsystem() {}
 
   /**
@@ -36,9 +39,9 @@ e   * @return value of some boolean subsystem state, such as a digital sensor.
 
   @Override
   public void periodic() {
-    Logger.recordOutput("Voltage", motorSim.getInputVoltage());
+    Logger.recordOutput("Voltage", motorSim.getAppliedOutput()); //sim
 
-    // Logger.recordOutput("Voltage", motor.getAppliedOutput());
+    // Logger.recordOutput("Voltage", motor.getAppliedOutput()); //real
   }
 
   @Override
@@ -47,12 +50,12 @@ e   * @return value of some boolean subsystem state, such as a digital sensor.
   }
 
   public void setMotorVoltage(double volts) {
-    motorSim.setInputVoltage(volts);
-    // motor.setVoltage(volts);
+    motorSim.setAppliedOutput(volts);; //sim
+    // motor.setVoltage(volts); //real
   }
 
   public void stop() {
-    motorSim.setInputVoltage(0.0);
-    // motor.setVoltage(0.0);
+    motorSim.setAppliedOutput(0.0); //sim
+    // motor.setVoltage(0.0); //real
   }
 }
